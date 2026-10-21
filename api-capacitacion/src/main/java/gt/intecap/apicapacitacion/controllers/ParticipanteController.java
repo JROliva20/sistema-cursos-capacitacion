@@ -1,7 +1,7 @@
 package gt.intecap.apicapacitacion.controllers;
 
 import gt.intecap.apicapacitacion.models.ParticipanteModel;
-import gt.intecap.apicapacitacion.repository.ParticipanteRepository;
+import gt.intecap.apicapacitacion.services.ParticipanteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,45 +16,54 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ParticipanteController {
 
-    private final ParticipanteRepository participanteRepository;
+    private final ParticipanteService participanteService;
 
     @GetMapping
     public List<ParticipanteModel> listarParticipantes() {
-        return participanteRepository.findAll();
+        return participanteService.listarParticipantes();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ParticipanteModel> buscarParticipantePorId(@PathVariable Long id) {
-        return participanteRepository.findById(id)
+        return participanteService.buscarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<ParticipanteModel> guardarParticipante(@Valid @RequestBody ParticipanteModel participante) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(participanteRepository.save(participante));
+    public ResponseEntity<?> guardarParticipante(@Valid @RequestBody ParticipanteModel participante) {
+        try {
+            ParticipanteModel nuevoParticipante = participanteService.guardarParticipante(participante);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoParticipante);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ParticipanteModel> actualizarParticipante(
+    public ResponseEntity<?> actualizarParticipante(
             @PathVariable Long id,
             @Valid @RequestBody ParticipanteModel p) {
-        return participanteRepository.findById(id)
+        return participanteService.buscarPorId(id)
                 .map(participante -> {
                     participante.setNombres(p.getNombres());
                     participante.setApellidos(p.getApellidos());
                     participante.setCorreo(p.getCorreo());
                     participante.setTelefono(p.getTelefono());
                     participante.setProfesion(p.getProfesion());
-                    return ResponseEntity.ok(participanteRepository.save(participante));
+                    try {
+                        return ResponseEntity.ok(participanteService.guardarParticipante(participante));
+                    } catch (IllegalArgumentException e) {
+                        return ResponseEntity.badRequest().body(e.getMessage());
+                    }
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarParticipante(@PathVariable Long id) {
-        if (participanteRepository.existsById(id)) {
-            participanteRepository.deleteById(id);
+        if (participanteService.buscarPorId(id).isPresent()) {
+            participanteService.eliminarParticipante(id);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();

@@ -1,5 +1,6 @@
 package gt.intecap.apicapacitacion.models;
 
+import gt.intecap.apicapacitacion.enums.Modalidad;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,8 +26,9 @@ public class CursoModel extends EntidadBaseModel {
     @Size(max = 255)
     private String descripcion;
 
-    @NotBlank(message = "La modalidad es obligatoria")
-    private String modalidad;
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "La modalidad es obligatoria")
+    private Modalidad modalidad;
 
     @NotNull(message = "El cupo es obligatorio")
     private Integer cupo;

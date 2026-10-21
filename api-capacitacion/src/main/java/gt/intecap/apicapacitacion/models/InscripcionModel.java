@@ -1,5 +1,6 @@
 package gt.intecap.apicapacitacion.models;
 
+import gt.intecap.apicapacitacion.enums.EstadoInscripcion;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -14,8 +15,8 @@ public class InscripcionModel extends EntidadBaseModel {
 
     private LocalDate fechaInscripcion;
 
-    @Size(max = 30)
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    private EstadoInscripcion estado;
 
     @ManyToOne
     @JoinColumn(name = "participante_id")
