@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de Curso - Sistema de Capacitación</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+
+    <div class="mb-4">
+        <a href="/" class="btn btn-outline-secondary btn-sm shadow-sm">
+            <i class="bi bi-arrow-left me-1"></i>Regresar al Inicio
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white p-3">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-journal-plus me-2"></i>
+                        <span th:text="${curso.id != null} ? 'Editar Curso' : 'Registrar Nuevo Curso'">Formulario Curso</span>
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <form th:action="@{/cursos/guardar}" th:object="${curso}" method="post">
+
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="mb-3">
+                            <label for="codigo" class="form-label fw-semibold">Código del Curso</label>
+                            <input type="text" id="codigo" th:field="*{codigo}" class="form-control" placeholder="Ej. JAVA-102" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label fw-semibold">Nombre del Curso</label>
+                            <input type="text" id="nombre" th:field="*{nombre}" class="form-control" placeholder="Ej. Programación Avanzada" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label fw-semibold">Descripción</label>
+                            <textarea id="descripcion" th:field="*{descripcion}" class="form-control" rows="3" placeholder="Breve descripción del contenido"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="modalidad" class="form-label fw-semibold">Modalidad</label>
+                                <select id="modalidad" th:field="*{modalidad}" class="form-select" required>
+                                    <option value="VIRTUAL">VIRTUAL</option>
+                                    <option value="PRESENCIAL">PRESENCIAL</option>
+                                    <option value="HIBRIDO">HIBRIDO</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="cupo" class="form-label fw-semibold">Cupo (1 - 40)</label>
+                                <input type="number" id="cupo" th:field="*{cupo}" class="form-control" min="1" max="40" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fechaInicio" class="form-label fw-semibold">Fecha de Inicio</label>
+                            <input type="date" id="fechaInicio" th:field="*{fechaInicio}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-4 form-check form-switch">
+                            <input type="checkbox" id="activo" th:field="*{activo}" class="form-check-input" role="switch">
+                            <label for="activo" class="form-check-label fw-semibold">Curso Activo</label>
+                        </div>
+
+                        <div class="d-flex justify-content-between gap-2">
+                            <a href="/cursos" class="btn btn-outline-secondary w-50">
+                                <i class="bi bi-arrow-left me-1"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary w-50 fw-semibold">
+                                <i class="bi bi-check-circle me-1"></i>Guardar Curso
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
