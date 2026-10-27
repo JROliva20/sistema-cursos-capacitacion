@@ -19,10 +19,15 @@ public class CursoController {
     }
 
     @GetMapping
-    public String listarCursos(Model model) {
+    public String listarCursos(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String modalidad,
+            Model model) {
         try {
-            List<CursoDto> cursos = cursoService.listarCursos();
+            List<CursoDto> cursos = cursoService.listarCursosFiltrados(nombre, modalidad);
             model.addAttribute("cursos", cursos);
+            model.addAttribute("nombreFiltro", nombre);
+            model.addAttribute("modalidadFiltro", modalidad);
         } catch (Exception e) {
             model.addAttribute("error", "No se pudo conectar con la API.");
         }

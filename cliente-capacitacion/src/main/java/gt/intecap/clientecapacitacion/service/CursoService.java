@@ -21,14 +21,29 @@ public class CursoService {
 
     public List<CursoDto> listarCursos() {
         return restClient.get()
-                .uri("/cursos") // Cambiado a /cursos para que coincida con la API
+                .uri("/cursos")
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<CursoDto>>() {});
     }
 
+    public List<CursoDto> listarCursosFiltrados(String nombre, String modalidad) {
+        List<CursoDto> cursos = listarCursos();
+        if (cursos == null) return List.of();
+
+        return cursos.stream().filter(curso -> {
+            boolean cumpleNombre = (nombre == null || nombre.isBlank()) ||
+                    (curso.getNombre() != null && curso.getNombre().toLowerCase().contains(nombre.toLowerCase()));
+
+            boolean cumpleModalidad = (modalidad == null || modalidad.isBlank() || modalidad.equals("Todas las modalidades")) ||
+                    (curso.getModalidad() != null && curso.getModalidad().equalsIgnoreCase(modalidad));
+
+            return cumpleNombre && cumpleModalidad;
+        }).toList();
+    }
+
     public void guardarCurso(CursoDto curso) {
         restClient.post()
-                .uri("/cursos") // Cambiado a /cursos
+                .uri("/cursos")
                 .body(curso)
                 .retrieve()
                 .toBodilessEntity();

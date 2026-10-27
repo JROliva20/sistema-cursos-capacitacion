@@ -10,7 +10,6 @@
 
 <div class="container py-5">
 
-
     <div class="row mb-4 align-items-center">
         <div class="col-md-8">
             <a href="/" class="btn btn-outline-secondary btn-sm shadow-sm mb-3">
@@ -26,9 +25,35 @@
         </div>
     </div>
 
+    <form th:action="@{/cursos}" method="get" class="row g-2 mb-4">
+        <div class="col-md-5">
+            <input type="text" class="form-control shadow-sm" name="nombre" th:value="${nombreFiltro}" placeholder="Buscar por nombre">
+        </div>
+        <div class="col-md-4">
+            <select class="form-select shadow-sm" name="modalidad">
+                <option value="" th:selected="${modalidadFiltro == null || modalidadFiltro == ''}">Todas las modalidades</option>
+                <option value="VIRTUAL" th:selected="${modalidadFiltro == 'VIRTUAL'}">VIRTUAL</option>
+                <option value="PRESENCIAL" th:selected="${modalidadFiltro == 'PRESENCIAL'}">PRESENCIAL</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-outline-primary w-100 shadow-sm fw-semibold">
+                <i class="bi bi-search me-1"></i>Buscar
+            </button>
+            <a href="/cursos" class="btn btn-outline-secondary shadow-sm" title="Limpiar filtro">
+                <i class="bi bi-arrow-counterclockwise"></i>
+            </a>
+        </div>
+    </form>
+
     <div th:if="${error}" class="alert alert-danger shadow-sm border-0 rounded-3" th:text="${error}"></div>
 
-    <div class="accordion shadow-sm rounded-3 overflow-hidden" id="accordionCursos">
+    <div th:if="${#lists.isEmpty(cursos)}" class="alert alert-info shadow-sm border-0 rounded-3 text-center py-4">
+        <i class="bi bi-info-circle-fill fs-4 d-block mb-2"></i>
+        <span>No se encontraron cursos que coincidan con la búsqueda.</span>
+    </div>
+
+    <div class="accordion shadow-sm rounded-3 overflow-hidden" id="accordionCursos" th:unless="${#lists.isEmpty(cursos)}">
         <div class="accordion-item mb-2 border-0 shadow-sm rounded overflow-hidden" th:each="curso, iterStat : ${cursos}">
 
             <h2 class="accordion-header" th:id="'heading' + ${iterStat.index}">

@@ -12,7 +12,6 @@ import java.util.List;
 public class ParticipanteService {
 
     private final RestClient restClient;
-
     public ParticipanteService(RestClient.Builder builder) {
         this.restClient = builder.baseUrl("http://localhost:8080/api").build();
     }
@@ -22,6 +21,23 @@ public class ParticipanteService {
                 .uri("/participantes")
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<ParticipanteDto>>() {});
+    }
+
+    public List<ParticipanteDto> listarParticipantesFiltrados(String nombre) {
+        List<ParticipanteDto> participantes = listarParticipantes();
+        if (participantes == null) return List.of();
+
+        if (nombre == null || nombre.isBlank()) {
+            return participantes;
+        }
+
+        String filtro = nombre.toLowerCase();
+        return participantes.stream()
+                .filter(p ->
+                        (p.getNombres() != null && p.getNombres().toLowerCase().contains(filtro)) ||
+                                (p.getApellidos() != null && p.getApellidos().toLowerCase().contains(filtro))
+                )
+                .toList();
     }
 
     public ParticipanteDto obtenerParticipantePorId(Long id) {

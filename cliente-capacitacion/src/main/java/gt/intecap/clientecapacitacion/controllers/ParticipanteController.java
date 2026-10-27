@@ -19,10 +19,14 @@ public class ParticipanteController {
     }
 
     @GetMapping
-    public String listarParticipantes(Model model) {
+    public String listarParticipantes(
+            @RequestParam(required = false) String nombre,
+            Model model) {
         try {
-            List<ParticipanteDto> participantes = participanteService.listarParticipantes();
+            List<ParticipanteDto> participantes = participanteService.listarParticipantesFiltrados(nombre);
             model.addAttribute("participantes", participantes);
+
+            model.addAttribute("nombreFiltro", nombre);
         } catch (Exception e) {
             model.addAttribute("error", "No se pudo conectar con la API de participantes.");
         }
